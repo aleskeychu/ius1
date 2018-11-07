@@ -19,16 +19,14 @@ TYPE     = $(shell type TYPE)
 PROJNAME = ${PROJECT}-${VERSION}-${BUILD}-${TYPE}
 TARBALL  = ${PROJNAME}.tar
 
-# Настройки M3P
 
 M3P		 = m3p
 COMPORT	 = com1
 COMLOG	 = $(COMPORT)_log.txt
 BAUD	 = 9600	
 
-# Каталоги с исходными текстами
 
-SRC_DIR = SRC
+SRC_DIR = 
 # ---------------------------------------------------------------------------
 
 all: test_led
@@ -62,17 +60,21 @@ term:
 
 
 LIST_SRC = \
-$(SRC_DIR)/led.c \
-$(SRC_DIR)/max.c \
-$(SRC_DIR)/test_led.c 
+$(SRC_DIR)led.c \
+$(SRC_DIR)max.c \
+$(SRC_DIR)test_led.c 
 
 LIST_OBJ = $(LIST_SRC:.c=.rel)
 
-test_led : $(LIST_OBJ) makefile
+test_led : $(LIST_OBJ) 
 	$(CC) $(LIST_OBJ) -o test_led.hex $(LFLAGS)
 	$(M3P) hb166 test_led.hex test_led.bin bye
 
+led.rel: led.c
+	$(CC) $(CFLAGS) $< -o $@
 
-$(LIST_OBJ) : %.rel : %.c makefile
-	$(CC) -c $(CFLAGS) $< -o $@  
+max.rel: max.c
+	$(CC) $(CFLAGS) $< -o $@
 
+test_led.rel: test_led.c
+	$(CC) $(CFLAGS) $< -o $@	
